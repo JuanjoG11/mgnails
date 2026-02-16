@@ -1,0 +1,21 @@
+{
+  "name": "MG Nails Paris",
+  "short_name": "MG Nails",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#FFF9FA",
+  "theme_color": "#FF85A1",
+  "description": "Agenda y Control de Finanzas Premium",
+  "icons": [
+    {
+      "src": "assets/logo.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/logo.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

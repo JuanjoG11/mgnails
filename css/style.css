@@ -1,0 +1,730 @@
+:root {
+    /* Color Palette - Vibrant Pink & Premium Paris Vibe */
+    --primary-pink: #FF85A1;
+    --dark-pink: #FF1A6B;
+    --accent-gold: #D4AF37;
+    --bg-light: #FFF9FA;
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(255, 255, 255, 0.4);
+    --text-dark: #2D1B17;
+    --text-light: #8E716A;
+    --white: #FFFFFF;
+    --shadow-soft: 0 10px 30px rgba(255, 133, 161, 0.15);
+    --shadow-premium: 0 20px 40px rgba(255, 26, 107, 0.2);
+
+    /* Spacing & Radius */
+    --radius-lg: 30px;
+    --radius-md: 20px;
+    --radius-sm: 12px;
+    --sidebar-width: 280px;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Outfit', sans-serif;
+    -webkit-tap-highlight-color: transparent;
+}
+
+body {
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+    min-height: 100vh;
+    overflow-x: hidden;
+    background-image:
+        radial-gradient(circle at 0% 0%, rgba(255, 133, 161, 0.1) 0%, transparent 50%),
+        radial-gradient(circle at 100% 100%, rgba(255, 26, 107, 0.05) 0%, transparent 50%);
+}
+
+/* Layout */
+.app-container {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: var(--sidebar-width);
+    background: var(--glass-bg);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border-right: 1px solid var(--glass-border);
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 10px 0 30px rgba(0, 0, 0, 0.02);
+}
+
+.brand {
+    text-align: center;
+    margin-bottom: 3rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.brand-logo {
+    width: 280px;
+    /* Aún más grande */
+    height: auto;
+    margin-bottom: 1rem;
+    filter: drop-shadow(0 8px 16px rgba(255, 59, 118, 0.2));
+    transition: transform 0.5s ease;
+}
+
+.brand-logo:hover {
+    transform: scale(1.05);
+}
+
+.brand h1 {
+    display: none;
+    /* Hide old text brand if logo is present */
+}
+
+.nav-links {
+    list-style: none;
+    flex: 1;
+}
+
+.nav-links li {
+    margin-bottom: 1rem;
+}
+
+.nav-links a {
+    text-decoration: none;
+    color: var(--text-light);
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.nav-links a i {
+    font-size: 1.2rem;
+    margin-right: 1rem;
+}
+
+.nav-links li.active a,
+.nav-links a:hover {
+    background: var(--primary-pink);
+    color: var(--white);
+    box-shadow: 0 4px 15px rgba(255, 183, 197, 0.4);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: var(--radius-md);
+}
+
+.avatar {
+    width: 40px;
+    height: 40px;
+    background: var(--dark-pink);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.info p {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.info small {
+    color: var(--text-light);
+    font-size: 0.8rem;
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.top-bar {
+    padding: 1.5rem 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: var(--glass-bg);
+    border-bottom: 1px solid var(--glass-border);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.top-bar h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--text-dark);
+}
+
+.mobile-logo-container {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 5px;
+}
+
+.mobile-logo {
+    height: 110px;
+    /* Aún más grande en móvil */
+    width: auto;
+}
+
+.date-display {
+    color: var(--text-light);
+    font-weight: 500;
+}
+
+.content-area {
+    flex: 1;
+    padding: 0 2rem 2rem;
+    overflow-y: auto;
+}
+
+/* Views */
+.view {
+    display: none;
+    animation: fadeIn 0.4s ease;
+}
+
+.view.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Dashboard Cards */
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.stat-card {
+    background: var(--white);
+    /* Solid white for better readability */
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    padding: 2.2rem;
+    display: flex;
+    align-items: center;
+    box-shadow: var(--shadow-premium);
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px) scale(1.02);
+    box-shadow: var(--shadow-premium);
+    border-color: var(--primary-pink);
+}
+
+.stat-card .icon {
+    width: 70px;
+    height: 70px;
+    background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink));
+    border-radius: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.8rem;
+    margin-right: 1.5rem;
+    box-shadow: 0 10px 20px rgba(255, 26, 107, 0.2);
+}
+
+.stat-card h3 {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-light);
+    margin-bottom: 0.4rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.stat-card .amount,
+.stat-card .number {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--text-dark);
+}
+
+.recent-activity {
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    padding: 2rem;
+    box-shadow: var(--shadow);
+}
+
+.recent-activity h3 {
+    font-family: 'Playfair Display', serif;
+    margin-bottom: 1.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.appointments-list {
+    list-style: none;
+}
+
+.appointment-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    transition: background 0.2s;
+    border-radius: var(--radius-sm);
+}
+
+.appointment-item:hover {
+    background: rgba(255, 255, 255, 0.4);
+}
+
+.appointment-item:last-child {
+    border-bottom: none;
+}
+
+.time-slot {
+    font-weight: 600;
+    color: var(--dark-pink);
+    width: 80px;
+}
+
+.client-info strong {
+    display: block;
+    color: var(--text-dark);
+}
+
+.client-info span {
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+/* Action Buttons */
+.btn-action {
+    border: none;
+    padding: 0.6rem 1rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.btn-complete {
+    background: linear-gradient(135deg, #4CAF50, #2E7D32);
+    color: white;
+    box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+    border: none;
+    padding: 0.8rem 1.2rem;
+}
+
+.btn-complete:hover {
+    background: linear-gradient(135deg, #66BB6A, #1B5E20);
+    box-shadow: 0 6px 15px rgba(76, 175, 80, 0.4);
+    transform: translateY(-2px);
+}
+
+.btn-delete {
+    background: #FFF0F0;
+    color: #FF1A6B;
+    padding: 0.8rem;
+    border-radius: 12px;
+}
+
+.btn-delete:hover {
+    background: #FF1A6B;
+    color: white;
+    transform: scale(1.1) rotate(8deg);
+    box-shadow: 0 4px 12px rgba(255, 26, 107, 0.2);
+}
+
+/* Status Badges */
+.status-badge {
+    padding: 0.5rem 1rem;
+    border-radius: 30px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.status-pending {
+    background: #FFF4E5;
+    color: #FF9800;
+}
+
+.status-completed {
+    background: #E8F5E9;
+    color: #4CAF50;
+}
+
+.status-cancelled {
+    background: #FFEBEE;
+    color: #F44336;
+}
+
+/* Buttons & Inputs (General) */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-pink), var(--dark-pink));
+    color: white;
+    border: none;
+    padding: 1rem 2rem;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.8rem;
+    box-shadow: 0 8px 20px rgba(255, 26, 107, 0.2);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.9rem;
+}
+
+.btn-primary:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 12px 25px rgba(255, 26, 107, 0.3);
+    opacity: 1;
+}
+
+.btn-primary:active {
+    transform: translateY(0) scale(0.98);
+}
+
+input,
+select {
+    padding: 0.8rem;
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    border-radius: var(--radius-sm);
+    outline: none;
+    width: 100%;
+}
+
+input:focus,
+select:focus {
+    border-color: var(--primary-pink);
+}
+
+/* Modal */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-content {
+    background: var(--white);
+    padding: 2rem;
+    border-radius: var(--radius-lg);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(20px);
+        opacity: 0;
+    }
+
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.modal-header h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+}
+
+.close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--text-light);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.empty-state {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* Charts Container */
+.chart-container {
+    background: var(--glass-bg);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: var(--shadow);
+    height: 300px;
+}
+
+.glass-panel {
+    background: var(--glass-bg);
+    border: 1px solid var(--glass-border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+}
+
+/* Bottom Navigation (Floating Capsule) */
+.bottom-nav {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 400px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.8);
+    border-radius: 35px;
+    /* Capsule shape */
+    padding: 15px 10px;
+    justify-content: space-around;
+    align-items: center;
+    z-index: 100;
+    box-shadow: 0 10px 40px rgba(255, 94, 142, 0.3);
+}
+
+.nav-item {
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: #C0A0A0;
+    /* Mute pink/grey */
+    font-size: 0.75rem;
+    gap: 4px;
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.nav-item i {
+    font-size: 1.4rem;
+}
+
+.nav-item.active {
+    color: var(--dark-pink);
+    transform: translateY(-5px);
+}
+
+/* FAB integrated into capsule logic if needed, but for now standard nav items */
+.center-fab {
+    background: linear-gradient(135deg, var(--dark-pink), var(--primary-pink));
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    transform: translateY(-25px);
+    box-shadow: 0 8px 20px rgba(255, 92, 138, 0.4);
+    border: 3px solid white;
+    position: absolute;
+    top: 0;
+}
+
+.center-fab i {
+    font-size: 1.8rem;
+}
+
+.center-fab:hover {
+    transform: translateY(-28px) scale(1.1);
+}
+
+/* Floating Eiffel Towers Decoration */
+.eiffel-floating {
+    position: fixed;
+    font-size: 3rem;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.25;
+    /* More visible */
+    filter: sepia(100%) saturate(200%) hue-rotate(300deg);
+    /* Pinkish tint */
+    animation: floatEiffel 12s infinite ease-in-out;
+}
+
+@keyframes floatEiffel {
+
+    0%,
+    100% {
+        transform: translateY(0) rotate(5deg);
+    }
+
+    50% {
+        transform: translateY(-40px) rotate(-10deg);
+    }
+}
+
+/* Mobile Responsive */
+@media (max-width: 1024px) {
+    :root {
+        --sidebar-width: 80px;
+    }
+
+    .sidebar .info,
+    .sidebar .brand-logo,
+    .sidebar .nav-links span {
+        display: none;
+    }
+
+    .sidebar {
+        padding: 2rem 0.5rem;
+        align-items: center;
+    }
+
+    .nav-links a {
+        justify-content: center;
+        padding: 1.2rem;
+    }
+
+    .nav-links a i {
+        margin-right: 0;
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        display: none;
+    }
+
+    .mobile-logo-container {
+        display: flex;
+    }
+
+    .bottom-nav {
+        display: flex;
+    }
+
+    .main-content {
+        padding-bottom: 120px;
+    }
+
+    .top-bar {
+        padding: 1rem 1.5rem;
+    }
+
+    .top-bar h2 {
+        display: none;
+        /* Hide title on very small screens to favor logo */
+    }
+
+    .content-area {
+        padding: 0 1rem 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .modal-content {
+        width: 100%;
+        border-radius: 40px 40px 0 0;
+        padding: 2.5rem 1.5rem;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        max-width: 500px;
+    }
+
+    /* Agenda Mobile Fixes */
+    .agenda-header {
+        flex-direction: column;
+        align-items: stretch !important;
+        gap: 1.5rem;
+        text-align: center;
+    }
+
+    .appointment-item {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 1.5rem;
+        padding: 1.5rem;
+    }
+
+    .appointment-item .time-slot {
+        width: 100%;
+        text-align: left;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        padding-bottom: 0.5rem;
+    }
+
+    .appointment-item>div:last-child {
+        justify-content: space-between;
+        margin-top: 0.5rem;
+    }
+}

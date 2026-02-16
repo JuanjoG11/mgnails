@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MG Nails Paris</title>
+
+    <!-- Manifest & PWA (Commented out for local file viewing) -->
+    <!-- <link rel="manifest" href="manifest.json"> -->
+    <meta name="theme-color" content="#FF85A1">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3890/3890797.png">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Playfair+Display:wght@400;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+    <!-- Charts -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- Supabase SDK -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="css/style.css?v=12">
+</head>
+
+<body>
+    <!-- Floating Decorations -->
+    <div class="eiffel-floating" style="top: 10%; left: 5%;">🗼</div>
+    <div class="eiffel-floating" style="top: 60%; right: 10%; animation-delay: 2s;">🗼</div>
+    <div class="eiffel-floating" style="bottom: 20%; left: 15%; animation-delay: 4s;">🗼</div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation (Desktop) -->
+        <nav class="sidebar">
+            <div class="brand">
+                <img src="assets/logo.png?v=12" alt="MG Nails Paris" class="brand-logo"
+                    onerror="this.style.display='none'; document.getElementById('brand-text').style.display='block'">
+                <h1 id="brand-text" style="display:none; font-family:'Playfair Display', serif; font-size:1.5rem;">MG
+                    Nails Paris</h1>
+            </div>
+
+            <ul class="nav-links">
+                <li class="active" data-view="dashboard">
+                    <a href="#"><i class='bx bxs-dashboard'></i> Panel Principal</a>
+                </li>
+                <li data-view="agenda">
+                    <a href="#"><i class='bx bxs-calendar'></i> Agenda</a>
+                </li>
+                <li data-view="services">
+                    <a href="#"><i class='bx bxs-spreadsheet'></i> Servicios</a>
+                </li>
+            </ul>
+
+            <div class="user-profile">
+                <div class="avatar">MG</div>
+                <div class="info">
+                    <p>Admin</p>
+                    <small>Paris, FR</small>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Main Content Area -->
+        <main class="main-content">
+            <header class="top-bar">
+                <div class="mobile-logo-container">
+                    <img src="assets/logo.png?v=12" alt="MG Nails Paris" class="mobile-logo">
+                </div>
+                <h2 id="page-title">Panel Principal</h2>
+                <div class="date-display" id="current-date">Cargando fecha...</div>
+            </header>
+
+            <div id="content-area" class="content-area">
+                <!-- Views will be injected here by JS -->
+
+                <!-- Dashboard View (Default) -->
+                <div class="view active" id="view-dashboard">
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="icon"><i class='bx bx-euro'></i></div>
+                            <div class="details">
+                                <h3>Hoy</h3>
+                                <p class="amount" id="daily-total">0,00 €</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon"><i class='bx bxs-bank'></i></div>
+                            <div class="details">
+                                <h3>Este Mes</h3>
+                                <p class="amount" id="monthly-total">0,00 €</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="icon"><i class='bx bxs-calendar-check'></i></div>
+                            <div class="details">
+                                <h3>Citas Hoy</h3>
+                                <p class="number" id="appointments-today">0</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Chart Container -->
+                    <div class="chart-container glass-panel">
+                        <h3 style="margin-bottom:1rem; font-family:'Playfair Display', serif;">Resumen Semanal</h3>
+                        <canvas id="dashboardChart"></canvas>
+                    </div>
+
+                    <div class="recent-activity">
+                        <h3>Próximas Citas</h3>
+                        <ul class="appointments-list" id="upcoming-appointments">
+                            <!-- Populated by JS -->
+                            <li class="empty-state">No hay citas próximas</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Other views placeholders -->
+                <div class="view" id="view-agenda"></div>
+                <div class="view" id="view-services"></div>
+            </div>
+        </main>
+
+        <!-- Bottom Navigation (Mobile) -->
+        <nav class="bottom-nav">
+            <a href="#" class="nav-item active" data-view="dashboard">
+                <i class='bx bxs-dashboard'></i>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="nav-item" data-view="agenda">
+                <i class='bx bxs-calendar'></i>
+                <span>Agenda</span>
+            </a>
+            <a href="#" class="nav-item center-fab" onclick="App.openAddAppointmentModal()">
+                <i class='bx bx-plus'></i>
+            </a>
+            <a href="#" class="nav-item" data-view="services">
+                <i class='bx bxs-spreadsheet'></i>
+                <span>Serv.</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Modals (Hidden by default) -->
+    <div id="modal-container" class="modal-container"></div>
+
+    <!-- Scripts -->
+    <!-- Service Worker Removed and Deregistered to solve cache issues -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.getRegistrations().then(function (registrations) {
+                for (let registration of registrations) {
+                    registration.unregister().then(function () {
+                        console.log('Service Worker unregistered');
+                        // Optional: reload to ensure fresh content
+                        // window.location.reload();
+                    });
+                }
+            });
+        }
+    </script>
+    <script src="js/utils.js?v=2"></script>
+    <script src="js/store.js?v=2"></script>
+    <script src="js/app.js?v=2"></script>
+</body>
+
+</html>
