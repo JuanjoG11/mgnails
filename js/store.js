@@ -9,14 +9,38 @@ const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZ
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 const Store = {
-    // Services (Static for now, can be moved to Supabase later)
-    getServices: () => {
-        return [
-            { id: '1', name: 'Manicura Semipermanente', price: 25 },
-            { id: '2', name: 'Pedicura Spa', price: 35 },
-            { id: '3', name: 'Uñas Acrílicas', price: 45 },
-            { id: '4', name: 'Nail Art (por uña)', price: 2 }
-        ];
+    // Services
+    getServices: async () => {
+        const { data, error } = await supabaseClient
+            .from('services')
+            .select('*')
+            .order('name', { ascending: true });
+
+        if (error) {
+            console.error('Error fetching services:', error);
+            return [];
+        }
+        return data || [];
+    },
+
+    addService: async (service) => {
+        const { error } = await supabaseClient
+            .from('services')
+            .insert([{
+                name: service.name,
+                price: service.price
+            }]);
+
+        if (error) console.error('Error adding service:', error);
+    },
+
+    deleteService: async (id) => {
+        const { error } = await supabaseClient
+            .from('services')
+            .delete()
+            .eq('id', id);
+
+        if (error) console.error('Error deleting service:', error);
     },
 
     // Appointments

@@ -19,11 +19,16 @@ const App = {
 
         // --- REALTIME SUBSCRIPTION ---
         supabaseClient
-            .channel('appointments-db-changes')
+            .channel('db-changes')
             .on('postgres_changes', { event: '*', schema: 'public', table: 'appointments' }, async () => {
                 const activeView = document.querySelector('.view.active').id;
                 if (activeView === 'view-dashboard') await App.renderDashboard();
                 if (activeView === 'view-agenda') await App.renderAgenda();
+            })
+            .on('postgres_changes', { event: '*', schema: 'public', table: 'services' }, async () => {
+                const activeView = document.querySelector('.view.active').id;
+                if (activeView === 'view-services') await App.renderServices();
+                // If we are in agenda and modal is open, we might need refresh but usually services don't change that often
             })
             .subscribe();
     },
@@ -191,9 +196,9 @@ const App = {
     },
 
     // --- SERVICES RENDER ---
-    renderServices: () => {
+    renderServices: async () => {
         const container = document.getElementById('view-services');
-        const services = Store.getServices();
+        const services = await Store.getServices();
 
         let html = `
             <div style="display:flex; justify-content:flex-end; margin-bottom:1rem;">
@@ -250,26 +255,25 @@ const App = {
         document.getElementById('modal-container').innerHTML = modalHtml;
     },
 
-    handleSaveService: (e) => {
+    handleSaveService: async (e) => {
         e.preventDefault();
         const formData = new FormData(e.target);
         const name = formData.get('name');
         const price = parseFloat(formData.get('price'));
 
-        Store.addService({
-            id: Utils.generateId(),
+        await Store.addService({
             name,
             price
         });
 
         App.closeModal();
-        App.renderServices();
+        await App.renderServices();
     },
 
-    deleteService: (id) => {
+    deleteService: async (id) => {
         if (confirm('¿Seguro que quieres eliminar este servicio?')) {
-            Store.deleteService(id);
-            App.renderServices();
+            await Store.deleteService(id);
+            await App.renderServices();
         }
     },
 
@@ -362,8 +366,8 @@ const App = {
         container.innerHTML = html;
     },
 
-    openAddAppointmentModal: () => {
-        const services = Store.getServices();
+    openAddAppointmentModal: async () => {
+        const services = await Store.getServices();
         let serviceOptions = services.map(s => `<option value="${s.id}" data-price="${s.price}" data-name="${s.name}">${s.name} (${Utils.formatCurrency(s.price)})</option>`).join('');
 
         const modalHtml = `
