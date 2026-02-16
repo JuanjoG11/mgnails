@@ -11,7 +11,11 @@ const App = {
         App.setupNavigation();
 
         // Initial Render
-        await App.renderDashboard();
+        try {
+            await App.renderDashboard();
+        } catch (e) {
+            console.error('Render error:', e);
+        }
 
         // --- REALTIME SUBSCRIPTION ---
         supabaseClient
@@ -131,17 +135,17 @@ const App = {
         }
 
         // Render Chart
-        App.renderChart();
+        App.renderChart(allAppointments);
     },
 
-    renderChart: () => {
+    renderChart: (appointments = []) => {
         const ctx = document.getElementById('dashboardChart');
         if (!ctx) return;
 
         // Destroy existing chart if any (to prevent overlap)
         if (window.myChart) window.myChart.destroy();
 
-        // Mock Weekly Data (Last 7 days)
+        // Weekly Data (Last 7 days)
         const labels = [];
         const data = [];
 
@@ -150,7 +154,7 @@ const App = {
             d.setDate(d.getDate() - i);
             const dateStr = d.toISOString().split('T')[0];
             labels.push(d.toLocaleDateString('es-ES', { weekday: 'short' }));
-            data.push(Store.getDailyTotal(dateStr));
+            data.push(Store.getDailyTotal(dateStr, appointments));
         }
 
         window.myChart = new Chart(ctx, {

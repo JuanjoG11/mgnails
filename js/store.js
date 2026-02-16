@@ -47,7 +47,9 @@ const Store = {
                 status: appointment.status
             }]);
 
-        if (error) console.error('Error adding appointment:', error);
+        if (error) {
+            console.error('Error adding appointment:', error);
+        }
     },
 
     updateAppointmentStatus: async (id, status) => {
@@ -56,7 +58,9 @@ const Store = {
             .update({ status })
             .eq('id', id);
 
-        if (error) console.error('Error updating appointment:', error);
+        if (error) {
+            console.error('Error updating appointment:', error);
+        }
     },
 
     deleteAppointment: async (id) => {
