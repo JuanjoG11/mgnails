@@ -971,6 +971,25 @@ select:focus {
     box-shadow: 0 8px 20px rgba(37, 211, 102, 0.3) !important;
 }
 
+.btn-wa-reminder {
+    background: linear-gradient(135deg, #E8A0B0, #C4687E) !important;
+    box-shadow: 0 8px 20px rgba(196, 104, 126, 0.25) !important;
+}
+
+.btn-reminder {
+    background: #FDF0F2;
+    color: #C4687E;
+    padding: 0.8rem;
+    border-radius: 12px;
+}
+
+.btn-reminder:hover {
+    background: #C4687E;
+    color: white;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(196, 104, 126, 0.2);
+}
+
 .btn-download {
     background: linear-gradient(135deg, #667eea, #764ba2) !important;
     box-shadow: 0 8px 20px rgba(102, 126, 234, 0.3) !important;

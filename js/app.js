@@ -451,6 +451,7 @@ const App = {
                         </div>
                         <div style="display:flex; gap:0.8rem; align-items:center;">
                             <span class="status-badge status-pending">Pendiente</span>
+                            <button onclick="App.openReminderModal({id:'${appt.id}', client:'${appt.client.replace(/'/g,"\\'")}', service_name:'${(appt.service_name||'').replace(/'/g,"\\'")}', serviceName:'${(appt.service_name||'').replace(/'/g,"\\'")}', price:${appt.price}, date:'${appt.date}', time:'${appt.time}', phone:'${appt.phone||''}'})" class="btn-action btn-reminder" title="Enviar recordatorio"><i class='bx bx-bell'></i></button>
                             <button onclick="App.completeAppointment('${appt.id}')" class="btn-action btn-complete" title="Finalizar Cita"><i class='bx bx-check'></i> Finalizar</button>
                             <button onclick="App.deleteAppointment('${appt.id}')" class="btn-action btn-delete" title="Eliminar"><i class='bx bx-trash'></i></button>
                         </div>
@@ -603,30 +604,39 @@ const App = {
         const cleanPhone    = Utils.cleanPhone(phone);
 
         const timeClean = appointment.time.slice(0, 5);
-        const waText = encodeURIComponent(
+
+        // Mensaje de confirmación (sin precio)
+        const waTextConfirm = encodeURIComponent(
             `*MG Nails Paris*\n\n` +
             `Hola ${Utils.capitalize(appointment.client)}, tu cita esta confirmada.\n\n` +
             `*Servicio:* ${appointment.serviceName || appointment.service_name}\n` +
             `*Fecha:* ${dateFormatted}\n` +
-            `*Hora:* ${timeClean}\n` +
-            `*Precio:* ${Utils.formatCurrency(appointment.price)}\n\n` +
+            `*Hora:* ${timeClean}\n\n` +
             `Te esperamos.`
         );
 
-        const whatsappSection = cleanPhone
-            ? `<a href="https://wa.me/${cleanPhone}?text=${waText}" target="_blank" class="btn-primary reminder-btn btn-wa">
-                   💬 Enviar por WhatsApp
-               </a>`
-            : `<div class="reminder-phone-fallback">
-                   <p style="font-size:0.9rem; color:var(--text-light); margin-bottom:0.5rem;">
-                       No se guardó teléfono. Ingresa el número para enviar:
-                   </p>
-                   <div style="display:flex; gap:0.5rem;">
+        // Mensaje de recordatorio (1 día antes)
+        const waTextReminder = encodeURIComponent(
+            `*MG Nails Paris*\n\n` +
+            `Hola ${Utils.capitalize(appointment.client)}, te recordamos que mañana tienes una cita.\n\n` +
+            `*Servicio:* ${appointment.serviceName || appointment.service_name}\n` +
+            `*Hora:* ${timeClean}\n\n` +
+            `Te esperamos.`
+        );
+
+        // Si hay teléfono: dos botones directos
+        // Si no hay teléfono: un input único + dos botones que lo usan
+        const waSection = cleanPhone
+            ? `<a href="https://wa.me/${cleanPhone}?text=${waTextConfirm}" target="_blank" class="btn-primary reminder-btn btn-wa">💬 Confirmar cita</a>
+               <a href="https://wa.me/${cleanPhone}?text=${waTextReminder}" target="_blank" class="btn-primary reminder-btn btn-wa-reminder">🔔 Recordar mañana</a>`
+            : `<div class="reminder-phone-fallback" style="width:100%;">
+                   <p style="font-size:0.85rem; color:var(--text-light); margin-bottom:0.6rem;">Sin teléfono guardado. Ingresa el número:</p>
+                   <div style="display:flex; gap:0.5rem; margin-bottom:0.5rem;">
                        <input type="tel" id="fallback-phone" placeholder="+34 600 000 000" style="flex:1;">
-                       <button class="btn-primary" style="padding:0.8rem 1rem; white-space:nowrap;"
-                               onclick="App.openWhatsAppFallback('${waText}')">
-                           💬 Enviar
-                       </button>
+                   </div>
+                   <div style="display:flex; gap:0.5rem;">
+                       <button class="btn-primary reminder-btn btn-wa" style="flex:1;" onclick="App.openWhatsAppFallback('${waTextConfirm}')">💬 Confirmar cita</button>
+                       <button class="btn-primary reminder-btn btn-wa-reminder" style="flex:1;" onclick="App.openWhatsAppFallback('${waTextReminder}')">🔔 Recordar mañana</button>
                    </div>
                </div>`;
 
@@ -645,7 +655,7 @@ const App = {
                     <button class="btn-primary reminder-btn btn-download" onclick="App.downloadReminderCard()">
                         📥 Descargar imagen
                     </button>
-                    ${whatsappSection}
+                    ${waSection}
                 </div>
                 <button class="btn-close-reminder" onclick="App.closeModal()">Cerrar</button>
             </div>
@@ -661,10 +671,35 @@ const App = {
     downloadReminderCard: () => {
         const canvas = document.getElementById('reminder-canvas');
         if (!canvas) return;
-        const link    = document.createElement('a');
-        link.download = 'cita-mgnails.png';
-        link.href     = canvas.toDataURL('image/png');
-        link.click();
+
+        const dataUrl = canvas.toDataURL('image/png');
+
+        // En móvil/tablet el click programático no descarga — abrimos en nueva pestaña
+        const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+        if (isMobile) {
+            const win = window.open();
+            win.document.write(`
+                <html><head><title>Guardar imagen</title>
+                <meta name="viewport" content="width=device-width,initial-scale=1">
+                <style>
+                    body { margin:0; background:#111; display:flex; flex-direction:column;
+                           align-items:center; justify-content:center; min-height:100vh; gap:16px; }
+                    img  { max-width:100%; border-radius:16px; box-shadow:0 4px 20px rgba(0,0,0,0.4); }
+                    p    { color:#fff; font-family:Arial,sans-serif; font-size:14px; text-align:center;
+                           margin:0; padding:0 16px; opacity:0.8; }
+                </style></head>
+                <body>
+                    <img src="${dataUrl}">
+                    <p>Mantén presionada la imagen para guardarla</p>
+                </body></html>
+            `);
+            win.document.close();
+        } else {
+            const link    = document.createElement('a');
+            link.download = 'cita-mgnails.png';
+            link.href     = dataUrl;
+            link.click();
+        }
     },
 
     openWhatsAppFallback: (waText) => {
