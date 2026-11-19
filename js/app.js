@@ -16,6 +16,9 @@ const App = {
             console.error('Render error:', e);
         }
 
+        // Saludo inicial del avatar
+        setTimeout(() => App.showAvatarBubble('dashboard'), 1200);
+
         // ── Realtime subscriptions ──
         supabaseClient
             .channel('db-changes')
@@ -84,6 +87,9 @@ const App = {
         if (viewName === 'agenda')    await App.renderAgenda();
         if (viewName === 'services')  await App.renderServices();
         if (viewName === 'finance')   await App.renderFinance();
+
+        // Avatar bounce al cambiar sección
+        App.triggerAvatarBounce(viewName);
     },
 
     // ─── DASHBOARD ────────────────────────────────────────────────────────────
@@ -887,7 +893,92 @@ const App = {
 
     closeModal: () => {
         document.getElementById('modal-container').innerHTML = '';
-    }
+    },
+
+    // ─── AVATAR FLOTANTE ──────────────────────────────────────────────────────
+
+    _avatarBubbleTimer: null,
+
+    avatarMessages: {
+        dashboard: [
+            '¡Todo bajo control! 💅',
+            'Revisando los números del día ✨',
+            '¡Bienvenida de vuelta! 🌸',
+            'El negocio va de maravilla 💖',
+        ],
+        agenda: [
+            '¿Quién viene hoy? 📅',
+            'Agenda organizada = mente tranquila ✨',
+            '¡A por las citas! 💅',
+            'No olvides confirmar las citas 🔔',
+        ],
+        services: [
+            '¿Agregamos algo nuevo? 💫',
+            'Servicios premium para clientas premium 👑',
+            'Tus precios, tu valor 💎',
+            '¡Un nuevo servicio quizás? 🌸',
+        ],
+        finance: [
+            'Los números no mienten 📊',
+            '¡Excelente mes! Sigue así 💪',
+            'Contando cada euro 💰',
+            'Las finanzas sanas = negocio feliz 🌟',
+        ],
+    },
+
+    showAvatarBubble: (viewName) => {
+        const bubble = document.getElementById('avatar-bubble');
+        const textEl = document.getElementById('avatar-bubble-text');
+        if (!bubble || !textEl) return;
+
+        const msgs = App.avatarMessages[viewName] || App.avatarMessages.dashboard;
+        const msg  = msgs[Math.floor(Math.random() * msgs.length)];
+
+        // Reset animation
+        bubble.classList.remove('hidden');
+        bubble.style.animation = 'none';
+        bubble.offsetHeight; // reflow
+        bubble.style.animation = '';
+        textEl.textContent = msg;
+
+        // Auto-ocultar después de 4s
+        clearTimeout(App._avatarBubbleTimer);
+        App._avatarBubbleTimer = setTimeout(() => {
+            bubble.style.animation = 'bubbleFadeOut 0.35s ease forwards';
+            setTimeout(() => bubble.classList.add('hidden'), 350);
+        }, 4000);
+    },
+
+    toggleAvatarBubble: () => {
+        const bubble = document.getElementById('avatar-bubble');
+        if (!bubble) return;
+
+        if (bubble.classList.contains('hidden')) {
+            const activeView = document.querySelector('.view.active')?.id?.replace('view-', '') || 'dashboard';
+            App.showAvatarBubble(activeView);
+        } else {
+            bubble.style.animation = 'bubbleFadeOut 0.35s ease forwards';
+            setTimeout(() => bubble.classList.add('hidden'), 350);
+            clearTimeout(App._avatarBubbleTimer);
+        }
+    },
+
+    triggerAvatarBounce: (viewName) => {
+        const avatarEl = document.getElementById('avatar-float');
+        if (!avatarEl) return;
+
+        avatarEl.classList.remove('bouncing');
+        avatarEl.offsetHeight; // reflow
+        avatarEl.classList.add('bouncing');
+
+        // Mostrar burbuja con mensaje de la sección
+        setTimeout(() => App.showAvatarBubble(viewName), 200);
+
+        avatarEl.addEventListener('animationend', () => {
+            avatarEl.classList.remove('bouncing');
+        }, { once: true });
+    },
+
 };
 
 document.addEventListener('DOMContentLoaded', App.init);

@@ -61,9 +61,13 @@
             </ul>
 
             <div class="user-profile">
-                <div class="avatar">MG</div>
+                <div class="avatar avatar-img-wrapper">
+                    <img src="assets/avatar.png" alt="MG" class="avatar-img"
+                        onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+                    <span class="avatar-fallback" style="display:none;">MG</span>
+                </div>
                 <div class="info">
-                    <p>Admin</p>
+                    <p>Mariana</p>
                     <small>Paris, FR</small>
                 </div>
             </div>
@@ -172,6 +176,14 @@
 
     <!-- Modals -->
     <div id="modal-container" class="modal-container"></div>
+
+    <!-- Avatar Flotante -->
+    <div class="avatar-float" id="avatar-float" onclick="App.toggleAvatarBubble()">
+        <div class="avatar-float-bubble hidden" id="avatar-bubble">
+            <span id="avatar-bubble-text">¡Hola! 💅</span>
+        </div>
+        <img src="assets/avatar.png" alt="Mariana" class="avatar-float-img">
+    </div>
 
     <!-- Deregister old Service Worker -->
     <script>

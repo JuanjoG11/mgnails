@@ -132,6 +132,31 @@ body {
     justify-content: center;
     font-weight: 600;
     margin-right: 10px;
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.avatar-img-wrapper {
+    padding: 0;
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    border-radius: 50%;
+    display: block;
+}
+
+.avatar-fallback {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 0.85rem;
 }
 
 .info p {
@@ -1129,5 +1154,199 @@ select:focus {
 
     .cashbox-summary-net {
         font-size: 1.2rem;
+    }
+}
+
+
+/* ═══════════════════════════════════════════════════════════════
+   AVATAR FLOTANTE ANIMADO
+   ═══════════════════════════════════════════════════════════════ */
+
+.avatar-float {
+    position: fixed;
+    bottom: 110px;
+    right: 20px;
+    z-index: 500;
+    cursor: pointer;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+    animation: avatarFloat 3.5s ease-in-out infinite;
+    filter: drop-shadow(0 16px 32px rgba(196, 104, 126, 0.5));
+    transition: filter 0.3s ease;
+}
+
+.avatar-float:hover {
+    filter: drop-shadow(0 20px 40px rgba(196, 104, 126, 0.75));
+}
+
+/* Resplandor pulsante detrás del avatar */
+.avatar-float::after {
+    content: '';
+    position: absolute;
+    bottom: -6px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100px;
+    height: 30px;
+    background: radial-gradient(ellipse, rgba(196, 104, 126, 0.45) 0%, transparent 70%);
+    border-radius: 50%;
+    animation: avatarGlow 3.5s ease-in-out infinite;
+    pointer-events: none;
+    z-index: -1;
+}
+
+.avatar-float-img {
+    width: 130px;
+    height: 130px;
+    object-fit: contain;
+    object-position: top center;
+    border-radius: 50%;
+    background: linear-gradient(160deg, #fce4ec, #f8bbd0);
+    border: 4px solid rgba(255, 255, 255, 0.95);
+    box-shadow:
+        0 0 0 6px rgba(232, 160, 176, 0.25),
+        0 0 0 12px rgba(232, 160, 176, 0.1),
+        0 12px 32px rgba(196, 104, 126, 0.3);
+    transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                box-shadow 0.35s ease;
+    animation: avatarRing 3.5s ease-in-out infinite;
+}
+
+.avatar-float:hover .avatar-float-img {
+    transform: scale(1.1) rotate(-4deg);
+    box-shadow:
+        0 0 0 8px rgba(232, 160, 176, 0.35),
+        0 0 0 16px rgba(232, 160, 176, 0.15),
+        0 16px 40px rgba(196, 104, 126, 0.45);
+}
+
+/* Burbuja de texto */
+.avatar-float-bubble {
+    background: linear-gradient(135deg, #fff 0%, #fff9fb 100%);
+    border: 2px solid rgba(232, 160, 176, 0.5);
+    border-radius: 22px 22px 4px 22px;
+    padding: 10px 16px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-dark);
+    box-shadow:
+        0 8px 28px rgba(196, 104, 126, 0.2),
+        0 2px 8px rgba(196, 104, 126, 0.1);
+    max-width: 230px;
+    text-align: right;
+    line-height: 1.4;
+    animation: bubblePop 0.45s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transform-origin: bottom right;
+    position: relative;
+}
+
+/* Punto de acento en la burbuja */
+.avatar-float-bubble::before {
+    content: '';
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    background: linear-gradient(135deg, #E8A0B0, #C4687E);
+    border-radius: 50%;
+    margin-right: 6px;
+    vertical-align: middle;
+    flex-shrink: 0;
+}
+
+.avatar-float-bubble.hidden {
+    display: none;
+}
+
+/* Animación principal de flotación — más pronunciada */
+@keyframes avatarFloat {
+    0%   { transform: translateY(0px) rotate(0deg); }
+    20%  { transform: translateY(-14px) rotate(1.5deg); }
+    50%  { transform: translateY(-24px) rotate(0deg); }
+    75%  { transform: translateY(-10px) rotate(-1.5deg); }
+    100% { transform: translateY(0px) rotate(0deg); }
+}
+
+/* Sombra sube y baja sincronizada */
+@keyframes avatarGlow {
+    0%   { transform: translateX(-50%) scaleX(1); opacity: 0.45; }
+    50%  { transform: translateX(-50%) scaleX(0.6); opacity: 0.2; }
+    100% { transform: translateX(-50%) scaleX(1); opacity: 0.45; }
+}
+
+/* Pulso sutil del ring */
+@keyframes avatarRing {
+    0%   { box-shadow: 0 0 0 6px rgba(232,160,176,0.25), 0 0 0 12px rgba(232,160,176,0.1),  0 12px 32px rgba(196,104,126,0.3); }
+    50%  { box-shadow: 0 0 0 10px rgba(232,160,176,0.18), 0 0 0 20px rgba(232,160,176,0.06), 0 18px 40px rgba(196,104,126,0.2); }
+    100% { box-shadow: 0 0 0 6px rgba(232,160,176,0.25), 0 0 0 12px rgba(232,160,176,0.1),  0 12px 32px rgba(196,104,126,0.3); }
+}
+
+/* Bounce al entrar en sección nueva — más dramático */
+@keyframes avatarBounce {
+    0%   { transform: translateY(0) scale(1); }
+    15%  { transform: translateY(-32px) scale(1.08); }
+    30%  { transform: translateY(-8px) scale(0.95); }
+    45%  { transform: translateY(-22px) scale(1.05); }
+    60%  { transform: translateY(-4px) scale(0.98); }
+    75%  { transform: translateY(-12px) scale(1.02); }
+    90%  { transform: translateY(-2px) scale(0.99); }
+    100% { transform: translateY(0) scale(1); }
+}
+
+.avatar-float.bouncing {
+    animation: avatarBounce 0.9s cubic-bezier(0.36, 0.07, 0.19, 0.97) forwards;
+}
+
+/* Pop de la burbuja */
+@keyframes bubblePop {
+    0%   { transform: scale(0.4) translateY(10px); opacity: 0; }
+    65%  { transform: scale(1.06) translateY(-2px); opacity: 1; }
+    100% { transform: scale(1) translateY(0); opacity: 1; }
+}
+
+@keyframes bubbleFadeOut {
+    0%   { opacity: 1; transform: scale(1); }
+    100% { opacity: 0; transform: scale(0.75) translateY(6px); }
+}
+
+/* Desktop */
+@media (min-width: 769px) {
+    .avatar-float {
+        bottom: 36px;
+        right: 36px;
+    }
+
+    .avatar-float-img {
+        width: 150px;
+        height: 150px;
+    }
+
+    .avatar-float::after {
+        width: 120px;
+    }
+}
+
+/* Tablet */
+@media (max-width: 1024px) and (min-width: 769px) {
+    .avatar-float {
+        right: 28px;
+    }
+}
+
+/* Mobile — encima del nav capsule */
+@media (max-width: 768px) {
+    .avatar-float {
+        bottom: 100px;
+        right: 14px;
+    }
+
+    .avatar-float-img {
+        width: 110px;
+        height: 110px;
+    }
+
+    .avatar-float::after {
+        width: 85px;
     }
 }
